@@ -23,7 +23,7 @@ const Home: NextPage = () => {
 
   return (
     <DailyProvider callObject={callObject}>
-      <button onClick={()=> {setData('1')}}>dh</button>
+      <button onClick={()=>{setData('1')}}>Parent Click</button>
       {callObject && <Participants />}
     </DailyProvider>
   )

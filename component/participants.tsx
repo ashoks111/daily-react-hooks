@@ -14,12 +14,13 @@ function ParticipantRow({ id }: any) {
 
 const Participants = () => {
     const daily =  useDaily();
+    // getting daily null
     console.log('daily ', daily);
     const participantIds = useParticipantIds({
         filter: 'remote',
         sort: 'user_name'
       });
-
+      // participantIds getting []
       console.log("participantIds", participantIds)
       const getParticipants = () => {
         console.log("participantIds inside func", participantIds)
@@ -27,7 +28,7 @@ const Participants = () => {
 
     return (
         <div>
-            <button onClick={getParticipants}>Click</button>
+            <button onClick={getParticipants}>Child Click</button>
             <ul>
                 {participantIds.map((id) => <ParticipantRow key={id} id={id} />)}
             </ul>
