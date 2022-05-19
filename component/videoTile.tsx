@@ -1,20 +1,23 @@
-import { useDaily } from '@daily-co/daily-react-hooks';
-import { useCallback, useState } from 'react';
-const VideoTile = () => {
+import { useParticipant } from '@daily-co/daily-react-hooks';
+import {  useRef, } from 'react';
+import dynamic from 'next/dynamic';
+import SoundMeter from './SoundMeter';
 
-    const callObject = useDaily();
-    const [muted, setMuted] = useState(false);
+const Video =dynamic(import ("./video"),{ssr:false});
+const VideoTile = (props: any) => {
 
-    const toggleCamera = useCallback(() => {
-        console.log('toggle cam', callObject);
-        callObject?.setLocalVideo(muted);
-        setMuted(!muted);
-      }, [ callObject, muted ]);
+    const { participantId, self } = props;
+    const participant = useParticipant(participantId);
 
-    console.log("call object", callObject);
+    console.log("participant", participant)
+    //@ts-ignore
+    const audioTrack = participant?.tracks?.audio?.persistentTrack;
+
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+
     return (
         <div>
-            <button onClick={toggleCamera}>njs</button>
+          <Video participant={participant}/>
         </div>
     )
 }

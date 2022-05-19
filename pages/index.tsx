@@ -16,17 +16,21 @@ const Home: NextPage = () => {
     const newCallObject = DailyIframe.createCallObject();
     
     setCallObject(newCallObject);
-    newCallObject.join({ url: DAILY_URL });
+    newCallObject.startCamera();
   }, []);
 
   console.log('newCallObject', callObject)
 
   return (
+    <>
+    {callObject && (
     <DailyProvider callObject={callObject}>
-      <button onClick={()=>{setData('1')}}>Parent Click</button>
-      {callObject && <Participants />}
-    </DailyProvider>
+      <Participants />
+    </DailyProvider>)}
+    
+    </>
   )
+  
 }
 
 export default Home

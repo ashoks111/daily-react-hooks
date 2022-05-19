@@ -1,37 +1,41 @@
-import { useDaily, useLocalParticipant, useParticipant, useParticipantIds } from '@daily-co/daily-react-hooks';
-
-function ParticipantRow({ id }: any) {
-    const participant = useParticipant(id);
-  
-    return (
-      <li style={{ display: 'flex', gap: 8 }}>
-        <span>{participant?.user_name ?? 'Guest'}</span>
-        <span>📷{participant?.tracks?.video?.state === 'playable' ? '✅' : '❌'}</span>
-        <span>🎙️{participant?.tracks?.audio?.state === 'playable' ? '✅' : '❌'}</span>
-      </li>
-    )
-  }
+import { useDaily, useDailyEvent, useLocalParticipant, useParticipant, useParticipantIds } from '@daily-co/daily-react-hooks';
+import { useCallback, useState } from 'react';
+import VideoTile from './videoTile';
 
 const Participants = () => {
     const daily =  useDaily();
-    // getting daily null
-    console.log('daily ', daily);
-    const participantIds = useParticipantIds({
-        filter: 'remote',
-        sort: 'user_name'
-      });
-      // participantIds getting []
-      console.log("participantIds", participantIds)
-      const getParticipants = () => {
-        console.log("participantIds inside func", participantIds)
-      }
+    const participantIds = useParticipantIds({filter: 'local'});
+    const [meetingState, setMeetingState] = useState('');
+
+    useDailyEvent(
+      'joined-meeting',
+      useCallback(ev => {
+        setMeetingState('joined');
+      }, []),
+    );
+    useDailyEvent(
+      'left-meeting',
+      useCallback(ev => {
+        setMeetingState('leave');
+        console.log("leave meeting")
+        daily?.startCamera();
+      }, []),
+    );
+
+    const join =() => {
+      daily?.join({url: 'https://diagnal.daily.co/loungetest'})
+    }
+
+    const leave = () => {
+      daily?.leave();
+    }
 
     return (
         <div>
-            <button onClick={getParticipants}>Child Click</button>
-            <ul>
-                {participantIds.map((id) => <ParticipantRow key={id} id={id} />)}
-            </ul>
+          {meetingState === 'joined' ? <button onClick={leave}>Leave</button> : <button onClick={join}>Join</button>}
+           
+                {participantIds.map((id) => <VideoTile key={id} participantId={id} />)}
+  
         </div>
       
     )
